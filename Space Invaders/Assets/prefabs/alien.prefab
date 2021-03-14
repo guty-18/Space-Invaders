@@ -153,7 +153,7 @@ MonoBehaviour:
   alienBullet: {fileID: 6177250082299873680, guid: 809af15cc9253438a82fa85c7ba96adc,
     type: 3}
   minimumFireRateTime: 3
-  maximumFireRateTime: 3
+  maximumFireRateTime: 6
   baseWaitTime: 3
   explodedShipImage: {fileID: 8463096131581357343, guid: 57ab9646413ca49c1b565103b9c3814d,
     type: 3}
