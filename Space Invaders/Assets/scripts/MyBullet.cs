@@ -11,12 +11,17 @@ public class MyBullet : MonoBehaviour
 
     public Sprite explodedAlienImage;
 
+    private GameObject obj;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
 
+        obj = GameObject.FindGameObjectWithTag("scenemanager");
+
         rb.velocity = Vector2.up * speed;
+
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -26,23 +31,14 @@ public class MyBullet : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (col.tag == "Shield")
-        {
-            Destroy(gameObject);
-        }
-
         if (col.tag == "Alien")
         {
-            SoundManager.Instance.PlayOneShot
-                (SoundManager.Instance.alienDies);
-
             IncreasTextUIScore();
 
-            col.GetComponent<SpriteRenderer>().sprite = explodedAlienImage;
+            obj.GetComponent<scenemanager>().aliens -= 1;
 
             Destroy(gameObject);
 
-            Object.Destroy(col.gameObject, 0.2f);
         }
 
         if (col.tag == "Shield")

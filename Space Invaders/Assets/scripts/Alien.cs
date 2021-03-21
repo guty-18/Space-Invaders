@@ -8,13 +8,7 @@ public class Alien : MonoBehaviour
 
     private Rigidbody2D rb;
 
-    public Sprite startingImage;
-
-    public Sprite alternativeImage;
-
     private SpriteRenderer sr;
-
-    public float secBeforeSpritechange = 0.5f;
 
     public GameObject alienBullet;
 
@@ -24,9 +18,16 @@ public class Alien : MonoBehaviour
 
     public float baseWaitTime = 1.0f;
 
-    public Sprite explodedShipImage; 
+    public Sprite alien_1_Image;
 
-    // Start is called before the first frame update
+    public Sprite alien_2_Image;
+
+    public Sprite explodedAlienImage;
+
+    public bool canAnimate = true;
+
+    public float pos;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -35,9 +36,28 @@ public class Alien : MonoBehaviour
 
         sr = GetComponent<SpriteRenderer>();
 
-        StartCoroutine(changeAlienSprite());
-
         baseWaitTime = baseWaitTime + Random.Range(minimumFireRateTime, maximumFireRateTime);
+
+        StartCoroutine(animations());
+    }
+
+    //animate
+
+    IEnumerator animations()
+    {
+        while (canAnimate == true)
+        {
+            if (sr.sprite == alien_1_Image)
+            {
+                sr.sprite = alien_2_Image;
+            }
+            else
+            {
+                sr.sprite = alien_1_Image;
+            }
+
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 
     void Turn(int direction)
@@ -50,7 +70,7 @@ public class Alien : MonoBehaviour
     void moveDown()
     {
         Vector2 position = transform.position;
-        position.y -= 1;
+        position.y -= pos;
         transform.position = position;
     }
 
@@ -67,33 +87,9 @@ public class Alien : MonoBehaviour
             Turn(-1);
             moveDown();
         }
-
-        if (gameObject.tag == "Bullet")
-        {
-            SoundManager.Instance.PlayOneShot(SoundManager.Instance.alienDies);
-            Destroy(gameObject);
-        }
     }
 
-    public IEnumerator changeAlienSprite()
-    {
-        while (true)
-        {
-            if (sr.sprite == startingImage)
-            {
-                sr.sprite = alternativeImage;
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.alienBuzz1);
-            }
-            else
-            {
-                sr.sprite = startingImage ;
-                SoundManager.Instance.PlayOneShot(SoundManager.Instance.alienBuzz2);
-            }
-            yield return new WaitForSeconds(secBeforeSpritechange);
-        }
-    }
-
-    private void FixedUpdate()
+    void Update()
     {
         if (Time.time > baseWaitTime)
         {
@@ -108,9 +104,16 @@ public class Alien : MonoBehaviour
         if (col.gameObject.tag == "Player")
         {
             SoundManager.Instance.PlayOneShot(SoundManager.Instance.shipExplosion);
-            col.GetComponent<SpriteRenderer>().sprite = explodedShipImage;
-            Destroy(gameObject);
+            Destroy(gameObject, 1f);
             GameObject.Destroy(col.gameObject, 0.2f);
+        }
+
+        if (col.gameObject.tag == "Bullet")
+        {
+            canAnimate = false;
+            sr.sprite = explodedAlienImage;
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.alienDies);
+            Destroy(gameObject, 0.15f);
         }
     }
 }

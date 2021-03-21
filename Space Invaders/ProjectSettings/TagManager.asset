@@ -9,6 +9,7 @@ TagManager:
   - Alien
   - Shield
   - AllinetBullet
+  - scenemanager
   layers:
   - Default
   - TransparentFX
